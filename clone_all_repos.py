@@ -1,6 +1,7 @@
 import os
 import requests
 import subprocess
+import sys
 
 token = "YOUR_TOKEN_HERE"
 org_name = "ORG_NAME"
@@ -16,15 +17,16 @@ while True:
     api_url = f"https://api.github.com/orgs/{org_name}/repos?type=all&per_page=100&page={page}"
     response = requests.get(api_url, headers=headers)
     if response.status_code != 200:
-        print("Error:", response.status_code, response.json())
-        break
+        print(f"Error fetching page {page}: {response.status_code} - {response.json()}")
+        sys.exit(1)
+        
     repos_page = response.json()
     if not repos_page:
         break
     all_repos.extend(repos_page)
     page += 1
 
-print(f"Number of repos find : {len(all_repos)}")
+print(f"Number of repos found: {len(all_repos)}")
 
 if all_repos:
     for repo in all_repos:
